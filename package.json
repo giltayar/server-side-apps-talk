@@ -2,10 +2,11 @@
   "name": "server-side-apps-talk",
   "version": "1.0.0",
   "description": "",
-  "main": "./app.js",
+  "main": "./src/app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node --test 'test/**/*.test.js'"
   },
   "keywords": [],
   "author": "",
