@@ -1,0 +1,10 @@
+/* Cross-document view transition: morph .new-todo input into the newly added <li>. */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(new-todo) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
