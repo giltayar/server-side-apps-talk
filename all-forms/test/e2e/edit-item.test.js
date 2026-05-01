@@ -1,7 +1,4 @@
 import {test, expect} from '@playwright/test'
-import {spawn} from 'node:child_process'
-import {tmpdir} from 'node:os'
-import {setTimeout} from 'node:timers/promises'
 import {createTodoMvcPageModel} from './page-model/todomvc-page.model.js'
 import {createTodoMvcEditItemPageModel} from './page-model/todomvc-edit-item.model.js'
 import {setup} from './initialize/setup.js'
@@ -55,7 +52,10 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     const updatedItem = todoMvc.todoList().items().item('Edited item title')
     await expect(updatedItem.locator).toBeVisible()
     await expect(updatedItem.locator).toHaveClass(/completed/)
-    await expect(updatedItem.titleLink().locator).toHaveAttribute('title', 'Hover tooltip note text')
+    await expect(updatedItem.titleLink().locator).toHaveAttribute(
+      'title',
+      'Hover tooltip note text',
+    )
   })
 
   test('should allow cancelling edits to an item', async ({page}) => {

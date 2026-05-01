@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {mkdtemp, rm} from 'node:fs/promises'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
-import {createTodoModel} from '../src/model.js'
+import {createTodoModel} from '../../src/model.js'
 
 async function makeModel(t) {
   const folder = await mkdtemp(join(tmpdir(), 'todo-model-test-'))
