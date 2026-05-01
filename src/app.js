@@ -8,7 +8,9 @@ import { renderTodoMvc } from "./views/todomvc.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const app = Fastify({ logger: true });
+const app = Fastify({
+  logger: { formatters: { level: (label) => ({ level: label }) } },
+});
 
 await app.register(fastifyFormbody);
 await app.register(fastifyStatic, {

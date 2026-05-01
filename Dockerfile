@@ -26,4 +26,4 @@ COPY . .
 # Run the job
 ENV NODE_ENV=production
 
-CMD ["node", "./src/app/index.ts"]
+CMD ["node", "./src/app.js"]
