@@ -105,4 +105,4 @@ app.post('/clear-completed', async (_, reply) => {
 app.get('/health', async () => ({}))
 
 const port = Number(process.env.PORT ?? 3000)
-await app.listen({port, host: '127.0.0.1'})
+await app.listen({port, host: '0.0.0.0'})
