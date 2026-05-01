@@ -1,17 +1,19 @@
 {
-  "name": "server-side-apps-talk",
-  "version": "1.0.0",
+  "name": "@giltayar/server-side-apps-talk",
+  "version": "1.0.2",
   "description": "",
   "main": "./src/app.js",
   "type": "module",
   "scripts": {
     "start": "node --watch src/app.js",
-    "test": "node --test 'test/**/*.test.js'"
+    "test": "node --test 'test/**/*.test.js'",
+    "build": "docker build --platform linux/amd64 -t giltayar/server-side-apps-talk:$npm_package_version . --secret id=npmrc,src=$HOME/.npmrc",
+    "postpublish": "docker push giltayar/server-side-apps-talk:$npm_package_version"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@11.0.0",
   "dependencies": {
     "@fastify/formbody": "^8.0.2",
     "@fastify/static": "^9.1.3",

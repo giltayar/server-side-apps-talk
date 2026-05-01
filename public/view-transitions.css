@@ -1,5 +1,3 @@
-/* Cross-document view transition: morph .new-todo input into the newly added <li>. */
-
 @view-transition {
   navigation: auto;
 }

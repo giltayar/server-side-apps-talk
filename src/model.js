@@ -1,5 +1,6 @@
 import { join } from 'node:path'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { setTimeout } from 'node:timers/promises'
 
 export function createTodoModel(folder) {
   const dataFile = join(folder, 'todos.json')
@@ -7,6 +8,7 @@ export function createTodoModel(folder) {
   async function readAll() {
     try {
       const raw = await readFile(dataFile, 'utf8')
+      await setTimeout(40)
       return JSON.parse(raw)
     } catch (err) {
       if (err.code === 'ENOENT') return []
