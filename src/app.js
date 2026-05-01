@@ -17,7 +17,7 @@ await app.register(fastifyStatic, {
   root: join(__dirname, '..', 'public'),
 })
 
-const todos = createTodoModel(process.env.DATA_DIR ?? join(__dirname, '..', 'data'))
+const todos = createTodoModel(process.env.DATA_DIR ?? join(__dirname, '..', '.data'))
 
 app.get('/', async (req, reply) => {
   const query = /**@type {{filter?: string}} */ (req.query)
