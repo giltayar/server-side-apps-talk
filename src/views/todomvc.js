@@ -39,7 +39,11 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                               onchange="this.form.submit()"
                               ...${t.completed ? {checked: true} : {}}
                             />
-                            <label>${t.title}</label>
+                            <label
+                              ><a class="title-link" href="/item/${t.id}" title=${t.notes ?? ''}
+                                >${t.title}</a
+                              ></label
+                            >
                           </form>
                           <form method="POST" action="/delete/${t.id}" style="display:inline">
                             <button class="destroy"></button>

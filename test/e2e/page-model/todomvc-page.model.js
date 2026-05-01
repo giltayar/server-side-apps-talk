@@ -1,6 +1,4 @@
-import type {Page} from '@playwright/test'
-
-export function createTodoMvcPageModel(page: Page) {
+export function createTodoMvcPageModel(page) {
   const root = page.locator('.todoapp')
 
   return {
@@ -13,7 +11,7 @@ export function createTodoMvcPageModel(page: Page) {
         locator,
         items: () => ({
           locator: items,
-          item: (title: string | RegExp) => {
+          item: (title) => {
             const itemLocator = items.filter({hasText: title})
             return {
               locator: itemLocator,
@@ -21,6 +19,9 @@ export function createTodoMvcPageModel(page: Page) {
                 locator: toggleLocator,
               }),
               label: (labelLocator = itemLocator.locator('label')) => ({locator: labelLocator}),
+              titleLink: (linkLocator = itemLocator.locator('.title-link')) => ({
+                locator: linkLocator,
+              }),
               destroyButton: (btnLocator = itemLocator.locator('.destroy')) => ({
                 locator: btnLocator,
               }),
@@ -51,5 +52,3 @@ export function createTodoMvcPageModel(page: Page) {
     }),
   }
 }
-
-export type TodoMvcPageModel = ReturnType<typeof createTodoMvcPageModel>

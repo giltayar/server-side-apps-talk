@@ -1,16 +1,12 @@
 import {test, expect} from '@playwright/test'
-import {spawn, type ChildProcess} from 'node:child_process'
-import {tmpdir} from 'node:os'
-import {setTimeout} from 'node:timers/promises'
+import {setup} from './initialize/setup.js'
 import {createTodoMvcPageModel} from './page-model/todomvc-page.model.js'
 
 test.describe('TodoMVC E2E Tests', () => {
-  let appProcess: ChildProcess
+  let appProcess
 
   test.beforeAll(async () => {
-    appProcess = spawnApp()
-
-    await waitForServer()
+    appProcess = await setup(3000)
   })
 
   test.afterAll(() => {
@@ -122,22 +118,3 @@ test.describe('TodoMVC E2E Tests', () => {
     await expect(todoMvc.footer().locator).toBeVisible()
   })
 })
-
-async function waitForServer() {
-  for (let i = 0; i < 20; i++) {
-    try {
-      const res = await fetch('http://127.0.0.1:3000/health')
-      if (res.ok) return
-    } catch {
-      await setTimeout(100)
-    }
-  }
-  throw new Error('App did not start in time')
-}
-
-function spawnApp() {
-  return spawn('node', ['src/app.js'], {
-    cwd: new URL('../..', import.meta.url),
-    env: {...process.env, PORT: '3000', DATA_DIR: tmpdir()},
-  })
-}
