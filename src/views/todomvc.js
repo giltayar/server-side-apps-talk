@@ -70,7 +70,7 @@ export function renderTodoMvc(allTodos, visibleTodos, { viewTransitionName, filt
               </section>
               <footer class="footer">
                 <span class="todo-count">
-                  <strong>${remaining}</strong> ${remaining === 1
+                  <strong>${remaining ? remaining : 'No'}</strong> ${remaining === 1
                     ? "item "
                     : "items "}
                   left
