@@ -3,7 +3,7 @@ export function createTodoMvcEditItemPageModel(page) {
 
   return {
     root,
-    heading: (locator = root.locator('h1')) => ({locator}),
+    heading: (locator = page.locator('h1')) => ({locator}),
     titleInput: (locator = root.locator('#title')) => ({locator}),
     notesInput: (locator = root.locator('#notes')) => ({locator}),
     completedCheckbox: (locator = root.locator('#completed')) => ({locator}),
