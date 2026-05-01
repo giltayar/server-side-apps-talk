@@ -1,6 +1,6 @@
 {
   "name": "@giltayar/server-side-apps-talk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "engines": {
     "node": ">=24"
@@ -9,10 +9,15 @@
   "type": "module",
   "scripts": {
     "start": "node --watch $INSPECT_APP src/app.js",
-    "test": "pnpm test:node && pnpm test:playwright",
+    "test": "pnpm test:prettier && pnpm test:oxlint && pnpm test:typescript && pnpm test:node && pnpm test:playwright",
+    "test:prettier": "prettier --check .",
+    "test:oxlint": "oxlint",
+    "test:typescript": "tsgo",
     "test:playwright": "playwright test --config test/e2e",
     "test:node": "node --test 'test/**/*.test.js'",
-    "build": "docker build --platform linux/amd64 -t giltayar/server-side-apps-talk:$npm_package_version . --secret id=npmrc,src=$HOME/.npmrc",
+    "build": "pnpm build:prettier && pnpm build:docker",
+    "build:prettier": "prettier --write .",
+    "build:docker": "docker build --platform linux/amd64 -t giltayar/server-side-apps-talk:$npm_package_version . --secret id=npmrc,src=$HOME/.npmrc",
     "postpublish": "docker push giltayar/server-side-apps-talk:$npm_package_version"
   },
   "keywords": [],
@@ -27,6 +32,10 @@
     "vhtml": "^2.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.59.1"
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "@typescript/native-preview": "7.0.0-dev.20260421.2",
+    "oxlint": "^1.62.0",
+    "prettier": "^3.8.3"
   }
 }
