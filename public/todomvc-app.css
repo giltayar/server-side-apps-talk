@@ -34,6 +34,10 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	font-weight: 300;
 }
+form {
+	margin: 0;
+	padding: 0;
+}
 
 .hidden {
 	display: none;

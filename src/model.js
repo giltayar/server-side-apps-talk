@@ -21,8 +21,11 @@ export function createTodoModel(folder) {
     await writeFile(dataFile, JSON.stringify(todos, null, 2))
   }
 
-  async function list() {
-    return await readAll()
+  async function list(filter = "all") {
+    const todos = await readAll()
+    if (filter === "active") return todos.filter((t) => !t.completed)
+    if (filter === "completed") return todos.filter((t) => t.completed)
+    return todos
   }
 
   async function get(id) {
@@ -63,5 +66,14 @@ export function createTodoModel(folder) {
     return true
   }
 
-  return { list, get, create, update, setCompleted, remove }
+  async function removeAll() {
+    await writeAll([])
+  }
+
+  async function clearCompleted() {
+    const todos = await readAll()
+    await writeAll(todos.filter((t) => !t.completed))
+  }
+
+  return { list, get, create, update, setCompleted, remove, removeAll, clearCompleted }
 }

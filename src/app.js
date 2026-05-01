@@ -24,11 +24,13 @@ const todos = createTodoModel(
 app.get("/health", async () => ({}));
 
 app.get("/", async (req, reply) => {
-  const list = await todos.list();
+  const filter = req.query.filter || "all";
+  const allTodos = await todos.list("all");
+  const visibleTodos = await todos.list(filter);
 
   reply.type("text/html; charset=utf-8");
 
-  return renderTodoMvc(list);
+  return renderTodoMvc(allTodos, visibleTodos, { filter });
 });
 
 app.post("/new", async (req, reply) => {
@@ -36,6 +38,30 @@ app.post("/new", async (req, reply) => {
   if (title) {
     await todos.create({ title, notes: "" });
   }
+  reply.redirect("/", 303);
+});
+
+app.post("/delete/:id", async (req, reply) => {
+  await todos.remove(Number(req.params.id));
+  reply.redirect("/", 303);
+});
+
+app.post("/toggle/:id", async (req, reply) => {
+  const id = Number(req.params.id);
+  const todo = await todos.get(id);
+  if (todo) {
+    await todos.setCompleted(id, !todo.completed);
+  }
+  reply.redirect("/", 303);
+});
+
+app.get("/delete-all", async (req, reply) => {
+  await todos.removeAll();
+  reply.redirect("/", 303);
+});
+
+app.post("/clear-completed", async (req, reply) => {
+  await todos.clearCompleted();
   reply.redirect("/", 303);
 });
 

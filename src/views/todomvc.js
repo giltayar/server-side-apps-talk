@@ -3,11 +3,11 @@ import htm from "htm";
 
 const html = htm.bind(vhtml);
 
-export function renderTodoMvc(todos, { viewTransitionName } = {}) {
+export function renderTodoMvc(allTodos, visibleTodos, { viewTransitionName, filter = "all" } = {}) {
   const nextViewTransitionName = crypto.randomUUID();
-  const remaining = todos.filter((t) => !t.completed).length;
-  const hasTodos = todos.length > 0;
-  const hasCompleted = todos.some((t) => t.completed);
+  const remaining = allTodos.filter((t) => !t.completed).length;
+  const hasTodos = allTodos.length > 0;
+  const hasCompleted = allTodos.some((t) => t.completed);
 
   const body = html`
     <body>
@@ -35,17 +35,26 @@ export function renderTodoMvc(todos, { viewTransitionName } = {}) {
                 />
                 <label for="toggle-all">Mark all as complete</label>
                 <ul class="todo-list">
-                  ${todos.map(
+                  ${visibleTodos.map(
                     (t, i, l) => html`
                       <li class=${t.completed ? "completed" : ""}>
                         <div class="view">
-                          <input
-                            class="toggle"
-                            type="checkbox"
-                            ...${t.completed ? { checked: true } : {}}
-                          />
-                          <label>${t.title}</label>
-                          <button class="destroy"></button>
+                          <form method="POST" action="/toggle/${t.id}" style="display: inline;">
+                            <input
+                              class="toggle"
+                              type="checkbox"
+                              onchange="this.form.submit()"
+                              ...${t.completed ? { checked: true } : {}}
+                            />
+                            <label>${t.title}</label>
+                          </form>
+                          <form
+                            method="POST"
+                            action="/delete/${t.id}"
+                            style="display:inline"
+                          >
+                            <button class="destroy"></button>
+                          </form>
                         </div>
                         <input
                           class="edit"
@@ -62,25 +71,34 @@ export function renderTodoMvc(todos, { viewTransitionName } = {}) {
               <footer class="footer">
                 <span class="todo-count">
                   <strong>${remaining}</strong> ${remaining === 1
-                    ? "item"
-                    : "items"}
+                    ? "item "
+                    : "items "}
                   left
                 </span>
                 <ul class="filters">
-                  <li><a class="selected" href="#/">All</a></li>
-                  <li><a href="#/active">Active</a></li>
-                  <li><a href="#/completed">Completed</a></li>
+                  <li><a class=${filter === "all" ? "selected" : ""} href="?filter=all">All</a></li>
+                  <li><a class=${filter === "active" ? "selected" : ""} href="?filter=active">Active</a></li>
+                  <li><a class=${filter === "completed" ? "selected" : ""} href="?filter=completed">Completed</a></li>
                 </ul>
                 ${hasCompleted
-                  ? html`<button class="clear-completed">
-                      Clear completed
-                    </button>`
+                  ? html`<form method="POST" action="/clear-completed" style="margin: 0; padding: 0; display: inline;">
+                           <button class="clear-completed">
+                             Clear completed
+                           </button>
+                         </form>`
                   : ""}
               </footer>
             `
           : ""}
       </section>
       <footer class="info">
+        <p>
+          <a
+            href="/delete-all"
+            style="font-size: 0.8em; color: inherit; text-decoration: underline; cursor: pointer;"
+            >remove all</a
+          >
+        </p>
         <p>Double-click to edit a todo</p>
         <p>Created by <a href="http://todomvc.com">you</a></p>
         <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
@@ -99,10 +117,7 @@ export function renderTodoMvc(todos, { viewTransitionName } = {}) {
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>TodoMVC</title>
-      <script src="/view-transition.js"></script>
-      <link rel="stylesheet" href="/todomvc-base.css" />
       <link rel="stylesheet" href="/todomvc-app.css" />
-      <link rel="stylesheet" href="/view-transitions.css" />
     </head>
   `;
 
