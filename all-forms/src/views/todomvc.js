@@ -14,7 +14,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
         <header class="header">
           <h1>todos</h1>
           <form id="new-todo-form" action="/new" method="POST">
-            <input type="hidden" name="filter" value=${filter} />
+            <input id="new-todo-filter" type="hidden" name="filter" value=${filter} />
             <input
               class="new-todo"
               name="title"
