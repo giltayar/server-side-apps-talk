@@ -56,7 +56,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                               <input
                                 class="toggle"
                                 type="checkbox"
-                                hx-on:change="this.closest('form').requestSubmit()"
+                                onchange="this.closest('form').requestSubmit()"
                                 ...${t.completed ? {checked: true} : {}}
                               />
                               <label
