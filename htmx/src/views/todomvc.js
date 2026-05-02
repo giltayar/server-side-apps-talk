@@ -21,10 +21,15 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
             hx-target="#todo-list-container"
             hx-select="#todo-list-container"
             hx-push-url="true"
-            hx-swap="outerHTML"
             hx-on:htmx:after-request="if(event.detail.successful) { document.querySelector('#new-todo').value = ''; document.querySelector('#new-todo').focus(); }"
           >
-            <input type="hidden" name="filter" value=${filter} />
+            <input
+              id="new-todo-filter"
+              type="hidden"
+              name="filter"
+              value=${filter}
+              hx-swap-oob="true"
+            />
             <input
               class="new-todo"
               name="title"
@@ -130,13 +135,13 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                   </ul>
                   ${hasCompleted
                     ? html`<form
+                        style="display: inline;"
                         action="/clear-completed"
                         method="POST"
                         hx-post="/clear-completed"
                         hx-target="#todo-list-container"
                         hx-select="#todo-list-container"
                         hx-push-url="true"
-                        style="display: inline;"
                       >
                         <input type="hidden" name="filter" value=${filter} />
                         <button class="clear-completed">Clear completed</button>
@@ -171,6 +176,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="htmx-config" content='{"defaultSwapStyle":"outerHTML"}' />
       <title>TodoMVC</title>
       <link rel="stylesheet" href="/todomvc.css" />
       <script src=${`/dist/htmx.min.js`}></script>

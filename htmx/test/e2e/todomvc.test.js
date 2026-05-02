@@ -14,8 +14,8 @@ test.describe('TodoMVC E2E Tests', () => {
     appProcess.kill()
   })
 
-  test.beforeEach(async ({request}) => {
-    await request.get('http://127.0.0.1:3000/delete-all')
+  test.beforeEach(async ({page}) => {
+    await page.goto('http://127.0.0.1:3000/delete-all')
   })
 
   test('should allow adding new todos', async ({page}) => {
@@ -119,5 +119,46 @@ test.describe('TodoMVC E2E Tests', () => {
     await todoMvc.todoList().items().item('Task 1').toggleCheckbox().locator.check()
 
     await expect(todoMvc.footer().locator).toBeVisible()
+  })
+
+  test('should preserve filter state when toggling, adding, or deleting todos', async ({page}) => {
+    const todoMvc = createTodoMvcPageModel(page)
+
+    await page.goto('http://127.0.0.1:3000/')
+
+    // Add initial todos
+    await todoMvc.newTodoInput().locator.fill('Task 1')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
+    await todoMvc.newTodoInput().locator.fill('Task 2')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
+
+    // Apply active filter
+    await waitForHtmx(page, () => todoMvc.footer().filters().activeLink().locator.click())
+    await expect(todoMvc.todoList().items().locator).toHaveCount(2)
+
+    // Append and keep filter (add)
+    await todoMvc.newTodoInput().locator.fill('Task 3')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
+    await expect(todoMvc.todoList().items().locator).toHaveCount(3)
+    await expect(todoMvc.footer().filters().activeLink().locator).toHaveClass('selected')
+
+    // Toggle and keep filter (toggle)
+    await waitForHtmx(page, () =>
+      todoMvc.todoList().items().item('Task 1').toggleCheckbox().locator.check(),
+    )
+    await expect(todoMvc.todoList().items().locator).toHaveCount(2)
+    await expect(todoMvc.footer().filters().activeLink().locator).toHaveClass('selected')
+
+    // Apply completed filter
+    await waitForHtmx(page, () => todoMvc.footer().filters().completedLink().locator.click())
+    await expect(todoMvc.todoList().items().locator).toHaveCount(1)
+
+    // Delete and keep filter (delete)
+    await todoMvc.todoList().items().item('Task 1').locator.hover()
+    await waitForHtmx(page, () =>
+      todoMvc.todoList().items().item('Task 1').destroyButton().locator.click(),
+    )
+    await expect(todoMvc.todoList().items().locator).toHaveCount(0)
+    await expect(todoMvc.footer().filters().completedLink().locator).toHaveClass('selected')
   })
 })
