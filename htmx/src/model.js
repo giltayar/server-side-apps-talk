@@ -21,7 +21,7 @@ export function createTodoModel(folder) {
     await writeFile(dataFile, JSON.stringify(todos, null, 2))
   }
 
-  async function list(filter = 'all') {
+  async function list(filter) {
     const todos = await readAll()
     const totalCount = todos.length
     const completedCount = todos.filter((t) => t.completed).length

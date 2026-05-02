@@ -56,18 +56,6 @@ form {
     0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
 
-.todoapp input::-webkit-input-placeholder {
-  font-style: italic;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.4);
-}
-
-.todoapp input::-moz-placeholder {
-  font-style: italic;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.4);
-}
-
 .todoapp input::input-placeholder {
   font-style: italic;
   font-weight: 400;

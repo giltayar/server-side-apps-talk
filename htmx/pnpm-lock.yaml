@@ -19,6 +19,9 @@ importers:
       htm:
         specifier: ^3.1.1
         version: 3.1.1
+      htmx.org:
+        specifier: ^2.0.10
+        version: 2.0.10
       vhtml:
         specifier: ^2.2.0
         version: 2.2.0
@@ -527,6 +530,12 @@ packages:
     resolution:
       {
         integrity: sha512-983Vyg8NwUE7JkZ6NmOqpCZ+sh1bKv2iYTlUkzlWmA5JD2acKoxd4KVxbMmxX/85mtfdnDmTFoNKcg5DGAvxNQ==,
+      }
+
+  htmx.org@2.0.10:
+    resolution:
+      {
+        integrity: sha512-kdeJe7ZVwaS6QMz/ebBIVtZdpwen6L0OQ5GOhPV9MKBb196TCZeZu4yA7ZIQsaLKv7EpXz+So7KSXNuHXhj7Cw==,
       }
 
   http-errors@2.0.1:
@@ -1054,6 +1063,8 @@ snapshots:
       path-scurry: 2.0.2
 
   htm@3.1.1: {}
+
+  htmx.org@2.0.10: {}
 
   http-errors@2.0.1:
     dependencies:

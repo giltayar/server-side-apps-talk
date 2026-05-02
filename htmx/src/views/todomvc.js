@@ -13,84 +13,139 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
       <section class="todoapp">
         <header class="header">
           <h1>todos</h1>
-          <form method="POST" action="/new">
-            <input class="new-todo" name="title" placeholder="What needs to be done?" autofocus />
+          <form
+            id="new-todo-form"
+            action="/new"
+            method="POST"
+            hx-post="/new"
+            hx-target="#todo-list-container"
+            hx-select="#todo-list-container"
+            hx-push-url="true"
+            hx-swap="outerHTML"
+            hx-on:htmx:after-request="if(event.detail.successful) { document.querySelector('#new-todo').value = ''; document.querySelector('#new-todo').focus(); }"
+          >
+            <input type="hidden" name="filter" value=${filter} />
+            <input
+              class="new-todo"
+              name="title"
+              placeholder="What needs to be done?"
+              id="new-todo"
+              autofocus
+            />
           </form>
         </header>
-        ${hasTodos
-          ? html`
-              <section class="main">
-                <input
-                  id="toggle-all"
-                  class="toggle-all"
-                  type="checkbox"
-                  ...${remaining === 0 ? {checked: true} : {}}
-                />
-                <label for="toggle-all">Mark all as complete</label>
-                <ul class="todo-list">
-                  ${visibleTodos.map(
-                    (t, i, l) => html`
-                      <li class=${t.completed ? 'completed' : ''}>
-                        <div class="view">
-                          <form method="POST" action="/toggle/${t.id}" style="display: inline;">
-                            <input
-                              class="toggle"
-                              type="checkbox"
-                              onchange="this.form.submit()"
-                              ...${t.completed ? {checked: true} : {}}
-                            />
-                            <label
-                              ><a class="title-link" href="/item/${t.id}" title=${t.notes ?? ''}
-                                >${t.title}</a
-                              ></label
+        <div id="todo-list-container">
+          ${hasTodos
+            ? html`
+                <section class="main">
+                  <ul class="todo-list">
+                    ${visibleTodos.map(
+                      (t) => html`
+                        <li class=${t.completed ? 'completed' : ''}>
+                          <div class="view">
+                            <form
+                              style="display: inline;"
+                              action="/toggle/${t.id}"
+                              method="POST"
+                              hx-post="/toggle/${t.id}"
+                              hx-target="#todo-list-container"
+                              hx-select="#todo-list-container"
+                              hx-push-url="true"
                             >
-                          </form>
-                          <form method="POST" action="/delete/${t.id}" style="display:inline">
-                            <button class="destroy"></button>
-                          </form>
-                        </div>
-                        <input
-                          class="edit"
-                          value=${t.title}
-                          style=${i === l.length - 1 ? 'view-transition-name: new-todo' : ''}
-                        />
-                      </li>
-                    `,
-                  )}
-                </ul>
-              </section>
-              <footer class="footer">
-                <span class="todo-count">
-                  <strong>${remaining ? remaining : 'No'}</strong> ${remaining === 1
-                    ? 'item '
-                    : 'items '}
-                  left
-                </span>
-                <ul class="filters">
-                  <li><a class=${filter === 'all' ? 'selected' : ''} href="?filter=all">All</a></li>
-                  <li>
-                    <a class=${filter === 'active' ? 'selected' : ''} href="?filter=active"
-                      >Active</a
-                    >
-                  </li>
-                  <li>
-                    <a class=${filter === 'completed' ? 'selected' : ''} href="?filter=completed"
-                      >Completed</a
-                    >
-                  </li>
-                </ul>
-                ${hasCompleted
-                  ? html`<form
-                      method="POST"
-                      action="/clear-completed"
-                      style="margin: 0; padding: 0; display: inline;"
-                    >
-                      <button class="clear-completed">Clear completed</button>
-                    </form>`
-                  : ''}
-              </footer>
-            `
-          : ''}
+                              <input type="hidden" name="filter" value=${filter} />
+                              <input
+                                class="toggle"
+                                type="checkbox"
+                                hx-on:change="this.closest('form').requestSubmit()"
+                                ...${t.completed ? {checked: true} : {}}
+                              />
+                              <label
+                                ><a class="title-link" href="/item/${t.id}" title=${t.notes ?? ''}
+                                  >${t.title}</a
+                                ></label
+                              >
+                            </form>
+                            <form
+                              style="display:inline"
+                              action="/delete/${t.id}"
+                              method="POST"
+                              hx-post="/delete/${t.id}"
+                              hx-target="#todo-list-container"
+                              hx-select="#todo-list-container"
+                              hx-push-url="true"
+                            >
+                              <input type="hidden" name="filter" value=${filter} />
+                              <button
+                                class="destroy"
+                                hx-post="/delete/${t.id}"
+                                hx-target="#todo-list-container"
+                                hx-select="#todo-list-container"
+                                hx-push-url="true"
+                              ></button>
+                            </form>
+                          </div>
+                        </li>
+                      `,
+                    )}
+                  </ul>
+                </section>
+                <footer class="footer">
+                  <span class="todo-count">
+                    <strong>${remaining ? remaining : 'No'}</strong> ${remaining === 1
+                      ? 'item '
+                      : 'items '}
+                    left
+                  </span>
+                  <ul class="filters">
+                    <li>
+                      <a
+                        class=${!filter ? 'selected' : ''}
+                        hx-get="?"
+                        hx-target="#todo-list-container"
+                        hx-select="#todo-list-container"
+                        hx-push-url="true"
+                        >All</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class=${filter === 'active' ? 'selected' : ''}
+                        hx-get="?filter=active"
+                        hx-target="#todo-list-container"
+                        hx-select="#todo-list-container"
+                        hx-push-url="true"
+                        >Active</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class=${filter === 'completed' ? 'selected' : ''}
+                        hx-get="?filter=completed"
+                        hx-target="#todo-list-container"
+                        hx-select="#todo-list-container"
+                        hx-push-url="true"
+                        >Completed</a
+                      >
+                    </li>
+                  </ul>
+                  ${hasCompleted
+                    ? html`<form
+                        action="/clear-completed"
+                        method="POST"
+                        hx-post="/clear-completed"
+                        hx-target="#todo-list-container"
+                        hx-select="#todo-list-container"
+                        hx-push-url="true"
+                        style="display: inline;"
+                      >
+                        <input type="hidden" name="filter" value=${filter} />
+                        <button class="clear-completed">Clear completed</button>
+                      </form>`
+                    : ''}
+                </footer>
+              `
+            : ''}
+        </div>
       </section>
       <footer class="info">
         <p>
@@ -118,6 +173,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>TodoMVC</title>
       <link rel="stylesheet" href="/todomvc.css" />
+      <script src=${`/dist/htmx.min.js`}></script>
     </head>
   `
 

@@ -1,6 +1,7 @@
 import {test, expect} from '@playwright/test'
 import {setup} from './initialize/setup.js'
 import {createTodoMvcPageModel} from './page-model/todomvc-page.model.js'
+import {waitForHtmx} from './htmx/wait-for-htmx-settled.js'
 
 test.describe('TodoMVC E2E Tests', () => {
   let appProcess
@@ -66,22 +67,22 @@ test.describe('TodoMVC E2E Tests', () => {
     await page.goto('http://127.0.0.1:3000/')
 
     await todoMvc.newTodoInput().locator.fill('Active Task')
-    await todoMvc.newTodoInput().locator.press('Enter')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
     await todoMvc.newTodoInput().locator.fill('Completed Task')
-    await todoMvc.newTodoInput().locator.press('Enter')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
 
     const completedItem = todoMvc.todoList().items().item('Completed Task')
-    await completedItem.toggleCheckbox().locator.check()
+    await waitForHtmx(page, () => completedItem.toggleCheckbox().locator.check())
 
-    await todoMvc.footer().filters().activeLink().locator.click()
+    await waitForHtmx(page, () => todoMvc.footer().filters().activeLink().locator.click())
     await expect(todoMvc.todoList().items().locator).toHaveCount(1)
     await expect(todoMvc.todoList().items().locator.first()).toContainText('Active Task')
 
-    await todoMvc.footer().filters().completedLink().locator.click()
+    await waitForHtmx(page, () => todoMvc.footer().filters().completedLink().locator.click())
     await expect(todoMvc.todoList().items().locator).toHaveCount(1)
     await expect(todoMvc.todoList().items().locator.first()).toContainText('Completed Task')
 
-    await todoMvc.footer().filters().allLink().locator.click()
+    await waitForHtmx(page, () => todoMvc.footer().filters().allLink().locator.click())
     await expect(todoMvc.todoList().items().locator).toHaveCount(2)
   })
 
@@ -91,13 +92,15 @@ test.describe('TodoMVC E2E Tests', () => {
     await page.goto('http://127.0.0.1:3000/')
 
     await todoMvc.newTodoInput().locator.fill('Task 1')
-    await todoMvc.newTodoInput().locator.press('Enter')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
     await todoMvc.newTodoInput().locator.fill('Task 2')
-    await todoMvc.newTodoInput().locator.press('Enter')
+    await waitForHtmx(page, () => todoMvc.newTodoInput().locator.press('Enter'))
 
-    await todoMvc.todoList().items().item('Task 1').toggleCheckbox().locator.check()
+    await waitForHtmx(page, () =>
+      todoMvc.todoList().items().item('Task 1').toggleCheckbox().locator.check(),
+    )
 
-    await todoMvc.footer().clearCompletedButton().locator.click()
+    await waitForHtmx(page, () => todoMvc.footer().clearCompletedButton().locator.click())
 
     await expect(todoMvc.todoList().items().locator).toHaveCount(1)
     await expect(todoMvc.todoList().items().locator.first()).toContainText('Task 2')
