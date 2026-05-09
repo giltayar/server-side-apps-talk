@@ -30,11 +30,11 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     const item = todoMvc.todoList().items().item('Test edit item')
     await expect(item.titleLink().locator).toHaveAttribute('title', '')
 
-    // Navigate to the edit item page
+    // Open the edit item dialog
     await item.titleLink().locator.click()
 
-    // Assert we're on the edit page
-    await expect(page).toHaveURL(/.*\/item\/\d+$/)
+    // Assert the dialog is open
+    await expect(editItemPage.dialog).toBeVisible()
     await expect(editItemPage.heading().locator).toHaveText('edit item')
 
     // Modify fields
@@ -45,8 +45,8 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     // Save changes
     await editItemPage.saveButton().locator.click()
 
-    // Back to main page
-    await expect(page).toHaveURL('http://127.0.0.1:3001/')
+    // Dialog should be closed
+    await expect(editItemPage.dialog).not.toBeVisible()
 
     // Assert item has been updated
     const updatedItem = todoMvc.todoList().items().item('Edited item title')
@@ -70,8 +70,8 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     const item = todoMvc.todoList().items().item('Test cancel edit')
     await item.titleLink().locator.click()
 
-    // Assert we're on the edit page
-    await expect(page).toHaveURL(/.*\/item\/\d+$/)
+    // Assert the dialog is open
+    await expect(editItemPage.dialog).toBeVisible()
 
     // Modify fields
     await editItemPage.titleInput().locator.fill('Changed title')
@@ -81,8 +81,8 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     // Cancel changes
     await editItemPage.cancelLink().locator.click()
 
-    // Back to main page
-    await expect(page).toHaveURL('http://127.0.0.1:3001/')
+    // Dialog should be closed
+    await expect(editItemPage.dialog).not.toBeVisible()
 
     // Assert item has NOT been updated
     const originalItem = todoMvc.todoList().items().item('Test cancel edit')

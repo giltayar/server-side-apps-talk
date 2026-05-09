@@ -1,9 +1,11 @@
 export function createTodoMvcEditItemPageModel(page) {
-  const root = page.locator('.edit-container')
+  const dialog = page.locator('dialog')
+  const root = dialog.locator('.edit-container')
 
   return {
+    dialog,
     root,
-    heading: (locator = page.locator('h1')) => ({locator}),
+    heading: (locator = dialog.locator('h1')) => ({locator}),
     titleInput: (locator = root.locator('#title')) => ({locator}),
     notesInput: (locator = root.locator('#notes')) => ({locator}),
     completedCheckbox: (locator = root.locator('#completed')) => ({locator}),

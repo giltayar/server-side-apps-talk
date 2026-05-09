@@ -91,8 +91,7 @@ app.get('/item/:id', async (req, reply) => {
   const todo = await todos.get(id)
 
   if (!todo) {
-    reply.status(404).send('Not Found')
-    return
+    return reply.status(404).send('Not Found')
   }
 
   reply.type('text/html; charset=utf-8')
@@ -111,7 +110,7 @@ app.post('/item/:id', async (req, reply) => {
     await todos.update(id, {title, notes, completed})
   }
 
-  reply.redirect('/', 303)
+  return reply.redirect('/', 303)
 })
 
 app.get('/health', async () => ({}))

@@ -46,7 +46,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                   <ul class="todo-list">
                     ${visibleTodos.map(
                       (t) => html`
-                        <li class=${t.completed ? 'completed' : ''}>
+                        <li class=${t.completed ? 'completed' : ''} id="todo-${t.id}">
                           <div class="view">
                             <form
                               style="display: inline;"
@@ -64,10 +64,18 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                                 onchange="this.closest('form').requestSubmit()"
                                 ...${t.completed ? {checked: true} : {}}
                               />
+
                               <label
-                                ><a class="title-link" href="/item/${t.id}" title=${t.notes ?? ''}
-                                  >${t.title}</a
-                                ></label
+                                ><a
+                                  class="title-link"
+                                  hx-get="/item/${t.id}"
+                                  hx-target="#modal-container"
+                                  hx-swap="innerHTML"
+                                  hx-push-url="false"
+                                  title=${t.notes ?? ''}
+                                >
+                                  ${t.title}
+                                </a></label
                               >
                             </form>
                             <form
@@ -164,11 +172,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
         <p>Created by <a href="http://todomvc.com">you</a></p>
         <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
       </footer>
-      <script
-        dangerouslySetInnerHTML=${{
-          __html: "//history.replaceState(null, '', location.pathname + location.hash);",
-        }}
-      ></script>
+      <div id="modal-container" hx-swap-oob="true"></div>
     </body>
   `
 
@@ -176,7 +180,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="htmx-config" content='{"defaultSwapStyle":"outerHTML"}' />
+      <meta name="htmx-config" content='{"defaultSwapStyle":"outerHTML", "disableInheritance":true}' />
       <title>TodoMVC</title>
       <link rel="stylesheet" href="/todomvc.css" />
       <script src=${`/dist/htmx.min.js`}></script>
