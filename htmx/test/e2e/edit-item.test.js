@@ -58,6 +58,30 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     )
   })
 
+  test('should show validation error when notes are too short', async ({page}) => {
+    const todoMvc = createTodoMvcPageModel(page)
+    const editItemPage = createTodoMvcEditItemPageModel(page)
+
+    await page.goto('http://127.0.0.1:3001/')
+
+    await todoMvc.newTodoInput().locator.fill('Test validation')
+    await todoMvc.newTodoInput().locator.press('Enter')
+
+    await todoMvc.todoList().items().item('Test validation').titleLink().locator.click()
+
+    await expect(editItemPage.dialog).toBeVisible()
+
+    // Enter notes shorter than 4 characters
+    await editItemPage.notesInput().locator.fill('ab')
+    await editItemPage.saveButton().locator.click()
+
+    // Dialog should remain open with validation error
+    await expect(editItemPage.dialog).toBeVisible()
+    await expect(editItemPage.notesErrorMessage().locator).toHaveText(
+      'Notes must be at least 4 characters long',
+    )
+  })
+
   test('should allow cancelling edits to an item', async ({page}) => {
     const todoMvc = createTodoMvcPageModel(page)
     const editItemPage = createTodoMvcEditItemPageModel(page)
@@ -67,8 +91,7 @@ test.describe('TodoMVC Edit Item E2E Tests', () => {
     await todoMvc.newTodoInput().locator.fill('Test cancel edit')
     await todoMvc.newTodoInput().locator.press('Enter')
 
-    const item = todoMvc.todoList().items().item('Test cancel edit')
-    await item.titleLink().locator.click()
+    await todoMvc.todoList().items().item('Test cancel edit').titleLink().locator.click()
 
     // Assert the dialog is open
     await expect(editItemPage.dialog).toBeVisible()

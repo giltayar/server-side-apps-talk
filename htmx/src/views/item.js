@@ -3,7 +3,7 @@ import htm from 'htm'
 
 const html = htm.bind(vhtml)
 
-export function renderItem(todo) {
+export function renderItem(todo, errors) {
   return html`
     <div>
       <dialog>
@@ -19,10 +19,11 @@ export function renderItem(todo) {
               hx-select="#todo-list-container"
             >
               <label for="title">Title</label>
-              <input type="text" id="title" name="title" value="${todo.title}" autofocus />
+              <input type="text" id="title" name="title" value="${todo.title}" />
 
               <label for="notes">Notes</label>
               <input type="text" id="notes" name="notes" value="${todo.notes || ''}" />
+              ${errors?.notes ? html`<div class="error">${errors.notes}</div>` : ''}
 
               <label for="completed">
                 <input

@@ -9,5 +9,6 @@ export function createTodoMvcEditItemPageModel(page) {
     completedCheckbox: (locator = root.locator('#completed')) => ({locator}),
     saveButton: (locator = root.locator('button[type="submit"]')) => ({locator}),
     cancelLink: (locator = root.locator('a', {hasText: 'Cancel'})) => ({locator}),
+    notesErrorMessage: (locator = root.locator('.error')) => ({locator}),
   }
 }

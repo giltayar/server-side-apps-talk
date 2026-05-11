@@ -3,7 +3,7 @@ import htm from 'htm'
 
 const html = htm.bind(vhtml)
 
-export function renderItem(todo) {
+export function renderItem(todo, errors) {
   const head = html`
     <head>
       <meta charset="utf-8" />
@@ -22,10 +22,11 @@ export function renderItem(todo) {
         <div class="edit-container">
           <form class="edit-form" action="/item/${todo.id}" method="post">
             <label for="title">Title</label>
-            <input type="text" id="title" name="title" value="${todo.title}" autofocus />
+            <input type="text" id="title" name="title" value="${todo.title}" />
 
             <label for="notes">Notes</label>
             <input type="text" id="notes" name="notes" value="${todo.notes || ''}" />
+            ${errors?.notes ? html`<div class="error">${errors.notes}</div>` : ''}
 
             <label for="completed">
               <input

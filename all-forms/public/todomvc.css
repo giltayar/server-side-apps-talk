@@ -455,4 +455,15 @@ html .clear-completed:active {
       cursor: pointer;
     }
   }
+
+  input:has(+ .error) {
+    border-color: red !important;
+    margin-bottom: 0px !important;
+  }
+
+  .error {
+    color: red;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+  }
 }

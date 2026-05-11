@@ -106,9 +106,17 @@ app.post('/item/:id', async (req, reply) => {
   const notes = (body.notes ?? '').trim()
   const completed = body.completed === 'true'
 
-  if (title) {
-    await todos.update(id, {title, notes, completed})
+  if (notes.length < 4) {
+    reply.header('HX-Retarget', '.edit-form')
+    reply.header('HX-Reselect', '.edit-form')
+    reply.type('text/html; charset=utf-8')
+    return renderItem(
+      {id, title, notes, completed},
+      {notes: 'Notes must be at least 4 characters long'},
+    )
   }
+
+  await todos.update(id, {title, notes, completed})
 
   return reply.redirect('/', 303)
 })
