@@ -106,7 +106,7 @@ app.post('/item/:id', async (req, reply) => {
   const notes = (body.notes ?? '').trim()
   const completed = body.completed === 'true'
 
-  if (notes.length < 4) {
+  if (notes.length > 0 && notes.length < 4) {
     reply.header('HX-Retarget', '.edit-form')
     reply.header('HX-Reselect', '.edit-form')
     reply.type('text/html; charset=utf-8')

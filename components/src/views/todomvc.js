@@ -153,13 +153,7 @@ function TodoItem({todo, filter}) {
           hx-push-url="true"
         >
           <input type="hidden" name="filter" value=${filter} />
-          <button
-            class="destroy"
-            hx-post="/delete/${todo.id}"
-            hx-target="#todo-list-container"
-            hx-select="#todo-list-container"
-            hx-push-url="true"
-          ></button>
+          <button class="destroy" type="submit"></button>
         </form>
       </div>
     </li>

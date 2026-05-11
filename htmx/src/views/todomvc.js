@@ -88,13 +88,7 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                               hx-push-url="true"
                             >
                               <input type="hidden" name="filter" value=${filter} />
-                              <button
-                                class="destroy"
-                                hx-post="/delete/${t.id}"
-                                hx-target="#todo-list-container"
-                                hx-select="#todo-list-container"
-                                hx-push-url="true"
-                              ></button>
+                              <button class="destroy" type="submit"></button>
                             </form>
                           </div>
                         </li>
@@ -180,7 +174,10 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="htmx-config" content='{"defaultSwapStyle":"outerHTML", "disableInheritance":true}' />
+      <meta
+        name="htmx-config"
+        content='{"defaultSwapStyle":"outerHTML", "disableInheritance":true}'
+      />
       <title>TodoMVC</title>
       <link rel="stylesheet" href="/todomvc.css" />
       <script src=${`/dist/htmx.min.js`}></script>

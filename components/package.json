@@ -1,5 +1,5 @@
 {
-  "name": "@giltayar/server-side-apps-talk-htmx",
+  "name": "@giltayar/server-side-apps-talk-components",
   "version": "1.0.1",
   "description": "",
   "engines": {
@@ -18,8 +18,8 @@
     "build": "pnpm build:prettier && pnpm build:htmx && pnpm build:docker",
     "build:prettier": "prettier --write .",
     "build:htmx": "mkdir -p dist && cp node_modules/htmx.org/dist/htmx.min.js dist/htmx.min.js",
-    "build:docker": "docker build --platform linux/amd64 -t giltayar/server-side-apps-talk-htmx:$npm_package_version . --secret id=npmrc,src=$HOME/.npmrc",
-    "postpublish": "docker push giltayar/server-side-apps-talk-htmx:$npm_package_version"
+    "build:docker": "docker build --platform linux/amd64 -t giltayar/server-side-apps-talk-components:$npm_package_version . --secret id=npmrc,src=$HOME/.npmrc",
+    "postpublish": "docker push giltayar/server-side-apps-talk-components:$npm_package_version"
   },
   "keywords": [],
   "author": "",
