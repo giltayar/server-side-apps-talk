@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="htmx-config"
+    content='{"defaultSwapStyle":"outerHTML", "disableInheritance":true}'
+  />
+  <title>TodoMVC</title>
+  <link rel="stylesheet" href="/todomvc.css" />
+  <script src="/dist/htmx.min.js"></script>
+</head>
+<body>
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+      <form
+        id="new-todo-form"
+        action="/new"
+        method="POST"
+        hx-post="/new"
+        hx-target="#todo-list-container"
+        hx-select="#todo-list-container"
+        hx-push-url="true"
+        hx-on:htmx:after-request="if(event.detail.successful) { document.querySelector('#new-todo').value = ''; document.querySelector('#new-todo').focus(); }"
+      >
+        <input
+          id="new-todo-filter"
+          type="hidden"
+          name="filter"
+          value="{{ filter }}"
+          hx-swap-oob="true"
+        />
+        <input
+          class="new-todo"
+          name="title"
+          placeholder="What needs to be done?"
+          id="new-todo"
+          autofocus
+        />
+      </form>
+    </header>
+    <div id="todo-list-container">
+      {% if total_count > 0 %}
+      <section class="main">
+        <ul class="todo-list">
+          {% for t in visible_todos %}
+          <li class="{% if t.completed %}completed{% endif %}" id="todo-{{ t.id }}">
+            <div class="view">
+              <form
+                style="display: inline;"
+                action="/toggle/{{ t.id }}"
+                method="POST"
+                hx-post="/toggle/{{ t.id }}"
+                hx-target="#todo-list-container"
+                hx-select="#todo-list-container"
+                hx-push-url="true"
+              >
+                <input type="hidden" name="filter" value="{{ filter }}" />
+                <input
+                  class="toggle"
+                  type="checkbox"
+                  onchange="this.closest('form').requestSubmit()"
+                  {% if t.completed %}checked{% endif %}
+                />
+
+                <label>
+                  <a
+                    class="title-link"
+                    hx-get="/item/{{ t.id }}"
+                    hx-target="#modal-container"
+                    hx-swap="innerHTML"
+                    hx-push-url="false"
+                    title="{{ t.notes }}"
+                  >{{ t.title }}</a>
+                </label>
+              </form>
+              <form
+                style="display:inline"
+                action="/delete/{{ t.id }}"
+                method="POST"
+                hx-post="/delete/{{ t.id }}"
+                hx-target="#todo-list-container"
+                hx-select="#todo-list-container"
+                hx-push-url="true"
+              >
+                <input type="hidden" name="filter" value="{{ filter }}" />
+                <button class="destroy" type="submit"></button>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      <footer class="footer">
+        <span class="todo-count">
+          <strong>{% if remaining > 0 %}{{ remaining }}{% else %}No{% endif %}</strong> 
+          {% if remaining == 1 %}item {% else %}items {% endif %}
+          left
+        </span>
+        <ul class="filters">
+          <li>
+            <a
+              class="{% if filter == "" %}selected{% endif %}"
+              hx-get="?"
+              hx-target="#todo-list-container"
+              hx-select="#todo-list-container"
+              hx-push-url="true"
+            >All</a>
+          </li>
+          <li>
+            <a
+              class="{% if filter == "active" %}selected{% endif %}"
+              hx-get="?filter=active"
+              hx-target="#todo-list-container"
+              hx-select="#todo-list-container"
+              hx-push-url="true"
+            >Active</a>
+          </li>
+          <li>
+            <a
+              class="{% if filter == "completed" %}selected{% endif %}"
+              hx-get="?filter=completed"
+              hx-target="#todo-list-container"
+              hx-select="#todo-list-container"
+              hx-push-url="true"
+            >Completed</a>
+          </li>
+        </ul>
+        {% if completed_count > 0 %}
+        <form
+          style="display: inline;"
+          action="/clear-completed"
+          method="POST"
+          hx-post="/clear-completed"
+          hx-target="#todo-list-container"
+          hx-select="#todo-list-container"
+          hx-push-url="true"
+        >
+          <input type="hidden" name="filter" value="{{ filter }}" />
+          <button class="clear-completed">Clear completed</button>
+        </form>
+        {% endif %}
+      </footer>
+      {% endif %}
+    </div>
+  </section>
+  <footer class="info">
+    <p>
+      <a
+        href="/delete-all"
+        style="font-size: 0.8em; color: inherit; text-decoration: underline; cursor: pointer;"
+      >remove all</a>
+    </p>
+    <p>Double-click to edit a todo</p>
+    <p>Created by <a href="http://todomvc.com">you</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
+  <div id="modal-container" hx-swap-oob="true"></div>
+</body>
+</html>
