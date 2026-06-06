@@ -55,7 +55,6 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                               hx-post="/toggle/${t.id}"
                               hx-target="#todo-list-container"
                               hx-select="#todo-list-container"
-                              hx-push-url="true"
                             >
                               <input type="hidden" name="filter" value=${filter} />
                               <input
@@ -71,7 +70,6 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                                   hx-get="/item/${t.id}"
                                   hx-target="#modal-container"
                                   hx-swap="innerHTML"
-                                  hx-push-url="false"
                                   title=${t.notes ?? ''}
                                 >
                                   ${t.title}
@@ -85,7 +83,6 @@ export function renderTodoMvc(visibleTodos, {totalCount, completedCount, filter}
                               hx-post="/delete/${t.id}"
                               hx-target="#todo-list-container"
                               hx-select="#todo-list-container"
-                              hx-push-url="true"
                             >
                               <input type="hidden" name="filter" value=${filter} />
                               <button class="destroy" type="submit"></button>
